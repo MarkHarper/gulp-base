@@ -1,35 +1,51 @@
 {
-  "name": "gulp-base",
+  "name": "gulp-base-test",
   "version": "1.0.0",
-  "description": "A basic gulp starter project",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "backbone": "^1.2.1",
-    "browserify": "^10.2.4",
+  "description": "A base setup for gulp (to be updated as we go along)",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "babel": "^5.8.23",
+    "babelify": "^6.3.0",
+    "backbone": "^1.2.3",
     "bulkify": "^1.1.1",
-    "del": "^1.2.0",
+    "browserify": "^10.2.6",
+    "d3": "^3.5.6",
+    "del": "^1.2.1",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",
-    "gulp-concat": "^2.5.2",
+    "gulp-babel": "^5.2.1",
+    "gulp-concat": "^2.6.0",
     "gulp-connect": "^2.2.0",
     "gulp-gh-pages": "^0.5.2",
-    "gulp-hashify": "0.0.25",
+    "gulp-hashify": "^0.0.25",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.0.1",
-    "gulp-sourcemaps": "^1.5.2",
+    "gulp-sass": "^2.0.4",
+    "gulp-sourcemaps": "^1.6.0",
     "gulp-tap": "^0.1.3",
-    "gulp-watch": "^4.2.4",
+    "gulp-watch": "^4.3.5",
+    "handlebars": "^4.0.3",
+    "hbsfy": "^2.3.1",
     "jquery": "^2.1.4",
+    "nvd3": "^1.8.1",
     "parsleyjs": "^2.1.2",
     "uglifyify": "^3.0.1",
     "underscore": "^1.8.3",
-    "vinyl": "^0.5.0",
+    "vinyl": "^0.5.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarkHarper/gulp-base.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarkHarper/gulp-base/issues"
+  },
+  "homepage": "https://github.com/MarkHarper/gulp-base#readme"
 }

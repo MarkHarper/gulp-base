@@ -11,24 +11,26 @@ var autoprefixer = require('gulp-autoprefixer');
 var hashify = require('gulp-hashify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
-var tap = require('gulp-tap');
 var del = require('del');
 var watch = require('gulp-watch');
 var sourcemaps = require('gulp-sourcemaps');
+var babelify = require('babelify');
+var hbsfy = require('hbsfy').configure({ extensions: ["html", "hbs"] });
+var handlebars = require('handlebars');
+
 
 // Common patterns used throughout the gulp configuration
 var src = {
   allHtml: './src/**/*.html',
-  allViews: './src/views/**/*.html',
   allJs: './src/**/*.js',
-  allFont: './src/**/*.{ttf,woff,otf,eot}',
   allScss: './src/**/*.scss',
-  allImg: './src/**/*.{jpg,png,svg,gif,ico}'
+  templates:
+	'./app/js/templates/**/*'
 };
 
 // The default task is what runs when you type 'gulp' in the terminal
 gulp.task('default', ['clean'], function () {
-  return gulp.start('html', 'img', 'font', 'js:views', 'js:vendor', 'js', 'scss', 'watch', 'reload', 'serve');
+  return gulp.start('html', 'js:vendor', 'js', 'scss', 'watch', 'reload', 'serve');
 });
 
 // Serve is a name I made up. You could call it 'dostuff' or whatever.
@@ -48,7 +50,7 @@ gulp.task('serve', function () {
 // 'default' task.
 gulp.task('watch', function () {
   watch(src.allHtml, function () {
-    gulp.start('html', 'js:views');
+    gulp.start('html');
   });
 
   watch(src.allJs, function () {
@@ -57,14 +59,6 @@ gulp.task('watch', function () {
 
   watch(src.allScss, function () {
     gulp.start('scss');
-  });
-  
-  watch(src.allImg, function () {
-    gulp.start('img');
-  });
-  
-  watch(src.allFont, function () {
-    gulp.start('font');
   });
 });
 
@@ -98,14 +92,15 @@ gulp.task('js', function () {
   var stream;
   
   try {
-    stream = browserify('./src/js/init.js', { debug: true })
+    stream = browserify('./src/js/init.js', { debug: true }).transform(babelify)
+    .transform(hbsfy)
     .transform('bulkify')
     .transform({ global: true }, 'uglifyify')
-    .external('views')
     .external('jquery')
-    .external('underscore')
+    .external('handlebars')
     .external('backbone')
-    .external('parsleyjs')
+    .external('d3')
+    .external('nvd3')
     .bundle();
   } catch (ex) {
     console.error(ex);
@@ -126,9 +121,10 @@ gulp.task('js:vendor', function () {
   return browserify({ debug: true })
     .transform({ global: true }, 'uglifyify')
     .require('jquery')
-    .require('underscore')
+    .require('handlebars')
     .require('backbone')
-    .require('parsleyjs')
+    .require('d3')
+    .require('nvd3')
     .bundle()
     .pipe(source('vendor.js'))
     .pipe(buffer())
@@ -137,36 +133,10 @@ gulp.task('js:vendor', function () {
     .pipe(gulp.dest('./dist/js'));
 });
 
-// Turn all views into a JavaScript object
-gulp.task('js:views', function () {
-  return gulp.src(src.allViews)
-    .pipe(hashify('bundled-views.js'))
-    .pipe(tap(function(file) {
-      return browserify()
-        .require(file, { expose: 'views' })
-        .bundle()
-        .pipe(source('views.js'))
-        .pipe(buffer())
-        .pipe(gulp.dest('./dist/js'));
-    }));
-});
-
 // Let's move our html files into dest, too... Sometime, we'll modify this
 // to do minification, cache-busting, etc...
 gulp.task('html', function () {
-  return gulp.src([src.allHtml, '!' + src.allViews])
-    .pipe(gulp.dest('./dist'));
-});
-
-// Move any images to the dist folder
-gulp.task('img', function () {
-  return gulp.src(src.allImg)
-    .pipe(gulp.dest('./dist'));
-});
-
-// Move any fonts to the dist folder
-gulp.task('font', function () {
-  return gulp.src(src.allFont)
+  return gulp.src([src.allHtml])
     .pipe(gulp.dest('./dist'));
 });
 
